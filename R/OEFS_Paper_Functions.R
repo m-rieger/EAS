@@ -348,15 +348,18 @@ add.zeros <- function(data = NULL,
   if (!is.null(ID.year.dep)) for(i in ID.year.dep) if(!i %in% colnames(data)) stop(paste0("Column '", i, "' is missing in data."))
   if (!is.null(species.dep)) for(i in species.dep) if(!i %in% colnames(data)) stop(paste0("Column '", i, "' is missing in data."))
 
-  if (unique(is.na(data[,abundance])) != FALSE) warning(paste0("Column '", abundance, "' in data has NAs - these are replaced by zero abundances."))
+  if (!identical(unique(is.na(data[,abundance])), FALSE)) warning(paste0("Column '", abundance, "' in data has NAs - these are replaced by zero abundances."))
 
   # create all possible ID.year-species combinations
-  df.null <- as.data.frame(expand.grid("ID.year" = levels(data$ID.year),
-                                       "species" = levels(data$species)))
+  df.null <- as.data.frame(expand.grid(ID.year = levels(as.factor(data[, ID.year])),
+                                       species = levels(as.factor(data[, species]))))
+
+  colnames(df.null)[colnames(df.null) == "ID.year"] <- ID.year
+  colnames(df.null)[colnames(df.null) == "species"] <- species
 
   # add ID.year and species dependencies
-  df.null <- left_join(df.null, unique(df.raw[, c(ID.year, ID.year.dep)]), by = ID.year)
-  df.null <- left_join(df.null, unique(df.raw[, c(species, species.dep)]), by = species)
+  df.null <- left_join(df.null, unique(data[, c(ID.year, ID.year.dep)]), by = ID.year)
+  df.null <- left_join(df.null, unique(data[, c(species, species.dep)]), by = species)
 
   # join with data
   df.zero <- left_join(df.null, data, by = c(ID.year, ID.year.dep, species, species.dep))
@@ -373,7 +376,7 @@ add.zeros <- function(data = NULL,
 
   if (!is.null(cols)) {
     warning(paste0("Column '", cols,
-    "' in data has NAs for all added zeros. Check whether it needs to be added to 'ID.year.dep' or 'species.dep' or add values manually.
+                   "' in data has NAs for all added zeros. Check whether it needs to be added to 'ID.year.dep' or 'species.dep' or add values manually.
                                     "))
   }
 
@@ -419,9 +422,10 @@ mod.stat <- function(model.list = NULL, model.name = NULL, response = NULL,
 
   if(is.null(model.list))  stop("You need to define the model-list.")
   if(!is.list(model.list)) stop("Model-list must be a list.")
-  if(is.null(model.name)) model.name <- names(model.list)
-  if(is.null(model.name)) model.name <- as.character(1:length(model.list)) # if the list is not named and still NULL
+  if(is.null(model.name))  model.name <- names(model.list)
+  if(is.null(model.name))  model.name <- as.character(1:length(model.list)) # if the list is not named and still NULL
   if(is.null(response))    stop("You need to define the response.")
+  if(is.null(spec))        spec  <- ""
 
   ## define df.
   df.modS  <- data.frame(Stats = c("prop_zero", "min", "max", "mean", "median", "sd"))
@@ -473,7 +477,7 @@ mod.stat <- function(model.list = NULL, model.name = NULL, response = NULL,
                             color = "grey30", linewidth = 2, fatten = 8) +
             ylab(paste0("function(", response, ")")) +
             xlab("model") +
-            ggtitle(paste0(sp, " - model statistics of response variable '", response, "'"),
+            ggtitle(paste0(spec, " - model statistics of response variable '", response, "'"),
                     subtitle = "observed value/raw data (blue line) and
 simulated values (median with 50% (thick) and  95% (thin) CrI)") +
             facet_wrap(~ Stats, scales = "free_y") +
@@ -562,7 +566,7 @@ mod.conv <- function(model.list = NULL, model.name = NULL, td = NULL,
     nuts <- nuts_params(model.list[[m]])
     df.modS$value[df.modS$conv == "div.trans"] <- max(nuts$Value[nuts$Parameter == "divergent__"])
     df.modS$value[df.modS$conv == "max. td"] <- max(nuts$Value[nuts$Parameter == "treedepth__"])
-    df.modS$Nthres[df.modS$conv == "div.trans"] <- length(nuts$Value[nuts$Parameter == "divergent__" & nuts$Value > 1])
+    df.modS$Nthres[df.modS$conv == "div.trans"] <- length(nuts$Value[nuts$Parameter == "divergent__" & nuts$Value >= 1])
     df.modS$Nthres[df.modS$conv == "max. td"] <- length(nuts$Value[nuts$Parameter == "treedepth__" & nuts$Value > td])
     df.modS$model   <- as.character(model.name[m])
     df.modS$species <- spec
