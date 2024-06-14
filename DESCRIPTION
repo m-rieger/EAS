@@ -2,7 +2,7 @@ Package: EAS
 Title: Module to analyse population trends from monitoring data with highly structured sampling designs
 Description: `EAS` is an `R` package that provides helper functions to analyse 
   population trends from monitoring data with highly structured sampling designs.
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Mirjam R.", "Rieger", , "mrieger@posteo.de", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7404-6023"))
