@@ -1,17 +1,6 @@
 ## Functions used in the OEFS Paper ##
 ######################################-
 
-## author: Mirjam R. Rieger
-## latest update: 2023-06-03 (MR)
-  # 2023-06-03 (MR): added add.zeros-function
-  # 2023-06-16 (MR): added option (FALSE/TRUE) to obs.eff and weight to get additional dataframe or not
-  #                  and updated weight-function to calculate weights per region, too
-  # 2023-07-03 (MR): added some details to mod.stat()
-  # 2023-07-28 (MR): minor changes to mod.stat and mod.conv
-
-## to see package: devtools::document() then ?
-#### ADD PACKAGE DESCRIPTION ####
-
 
 #' Weights based on habitat representativity
 #'
@@ -38,6 +27,10 @@
 #'    resulting in different annual site-subsets per species)
 #' @param species column name of species name in `df.data`
 #'    (only needed if `by_spec = TRUE`)
+#' @param by_reg logical indicating whether weights should be calculated per
+#'    region (`by_reg = TRUE`, e.g. natural regions, biogeographical regions, ...)
+#' @param region column name of region in `df.data`
+#'    (only needed if `by_reg = TRUE`)
 #' @param add.df if `TRUE`, returns a dataframe with weights per habitat and
 #'    year (and species)
 #'
@@ -410,7 +403,7 @@ add.zeros <- function(data = NULL,
 #'
 #' @import brms
 #' @import ggplot2
-#'
+#' @importFrom stats median quantile sd
 #' @export
 #'
 #'
@@ -523,7 +516,7 @@ simulated values (median with 50% (thick) and  95% (thin) CrI)") +
 #'
 #'
 #' @import brms
-#' @import tidyverse
+#' @import dplyr
 #' @import bayestestR
 #' @import ggplot2
 #'

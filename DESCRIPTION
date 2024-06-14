@@ -1,11 +1,19 @@
 Package: EAS
-Title: What the Package Does (One Line, Title Case)
+Title: Module to analyse population trends from monitoring data with highly structured sampling designs
+Description: `EAS` is an `R` package that provides helper functions to analyse 
+  population trends from monitoring data with highly structured sampling designs.
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`
+    person("Mirjam R.", "Rieger", , "mrieger@posteo.de", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7404-6023"))
+URL: https://github.com/m-rieger/EAS
+BugReports: https://github.com/m-rieger/EAS/issues
+Imports:
+  bayestestR,
+  brms,
+  dplyr,
+  ggplot2
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
