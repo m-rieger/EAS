@@ -9,7 +9,8 @@ mod.stat(
   model.name = NULL,
   response = NULL,
   plot.stats = FALSE,
-  spec = NULL
+  spec = NULL,
+  sv = c("prop_zero", "max", "mean", "sd")
 )
 }
 \arguments{
@@ -22,11 +23,16 @@ mod.stat(
 \item{plot.stats}{if \code{TRUE}, graphical output is given}
 
 \item{spec}{name of species (for title of plot)}
+
+\item{sv}{defines, which model statistics should be used for the calculation
+of the selection value (default = prop_zero, max, mean, sd). The value can range
+between 0 and 0.25*number of model statistics (default = 4). The closer to 0,
+the better is the model performance in terms of these statistics.}
 }
 \value{
 \code{mod.stat()} returns a dataframe including the above mentioned model statistics
 for the proportion of zeros, minimum, maximum, mean, median, and SD of the
-response variable for all given models.
+response variable for all given models as well as the selection value.
 
 The function optionally returns a graphical output inlcuding the observed value
 of the raw data as well as median with 50\% and 95\% CrI of the simulated values
