@@ -1,7 +1,3 @@
-## Functions used in the OEFS Paper ##
-######################################-
-
-
 #' Weights based on habitat representativity
 #'
 #' @description
